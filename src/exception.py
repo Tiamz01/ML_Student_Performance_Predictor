@@ -1,6 +1,6 @@
 import sys
 import logging
-import logger
+# import src.logger
 
 #error message structure
 def error_message_detail(error, error_detail:sys):
@@ -24,11 +24,11 @@ class CustomException(Exception):
 
 
 
-if __name__=="__main__":
-        try:
-            a = 10/0
-        except Exception as e:
-            logger.logging.info('Divide by zero error')
-            raise CustomException(e, sys)
+# if __name__=="__main__":
+#         try:
+#             a = 10/0
+#         except Exception as e:
+#             logger.logging.info('Divide by zero error')
+#             raise CustomException(e, sys)
            
             
