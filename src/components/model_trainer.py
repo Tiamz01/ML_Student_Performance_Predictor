@@ -1,14 +1,13 @@
-# Basic Import
+# Import necessary libraries
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import seaborn as sns
-
 import os
 import sys
 from dataclasses import dataclass
 
-# Modelling
+# Importing the models
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
@@ -21,70 +20,75 @@ from catboost import CatBoostRegressor
 from xgboost import XGBRegressor
 import warnings
 
-from src.logger import logging  # Import the logging module from a custom source
-from  src.exception import CustomException
-
+# Import custom modules for logging, exceptions, and utility functions
+from src.logger import logging
+from src.exception import CustomException
 from src.utils import save_object, evaluate_model
 
+# Define a dataclass for ModelTrainer configuration
 @dataclass
 class ModelTrainerConfig:
-    trained_model_file_path=os.path.join('artifacts', 'model.pkl')
+    trained_model_file_path = os.path.join('artifacts', 'model.pkl')
 
-
+# ModelTrainer class for training and evaluating machine learning models
 class ModelTrainer:
     def __init__(self):
         self.model_trainer_config = ModelTrainerConfig()
 
     def initiate_model_trainer(self, train_array, test_array):
         try:
-            logging.info("split trainin")
+            # Log that model training has started
+            logging.info("Starting model training")
 
-            X_train,y_train, X_test, y_test = (
+            # Split the training and test data arrays into input features and target variables
+            X_train, y_train, X_test, y_test = (
                 train_array[:, :-1],
                 train_array[:, -1],
                 test_array[:, :-1],
                 test_array[:, -1]
             )
 
+            # Define a dictionary of machine learning models to evaluate
             models = {
-                
-                'K_Neighbors clasifer': KNeighborsRegressor(),
+                'K_Neighbors clasifier': KNeighborsRegressor(),
                 'DecisionTree Regressor': DecisionTreeRegressor(),
                 'RandomForest Regressor': RandomForestRegressor(),
-                'AdaBoost classifier':AdaBoostRegressor(),
+                'AdaBoost classifier': AdaBoostRegressor(),
                 'Gradient Boosting': GradientBoostingRegressor(),
-                'Linear Regression':LinearRegression(),               
+                'Linear Regression': LinearRegression(),
                 'CatBoost': CatBoostRegressor(verbose=False),
                 'Xgboost': XGBRegressor()
-
-                }
+            }
             
-            model_report:dict = evaluate_model(X_train,X_test, y_train, y_test, models )
+            # Evaluate the models using the evaluate_model function
+            model_report = evaluate_model(X_train, X_test, y_train, y_test, models)
             
-            ##Obtaining the best model name from dict
+            # Obtain the best model name based on the evaluation results
             best_model_score = max(sorted(model_report.values()))
-
-            ## Model with best score
             best_model_name = list(model_report.keys())[
                 list(model_report.values()).index(best_model_score)
             ]
 
+            # Get the best model from the dictionary
             best_model = models[best_model_name]
 
+            # If the best model's score is below a threshold, raise a CustomException
             if best_model_score < 0.6:
                 raise CustomException('No best model found')
-            logging.info("best model found on both training and test dataset")
 
+            # Log that the best model was found on both training and test datasets
+            logging.info("Best model found on both training and test datasets")
 
-            save_object(
-                file_path= self.model_trainer_config.trained_model_file_path,
-                obj=best_model
-            )
+            # Save the best model to a specified file path
+            save_object(file_path=self.model_trainer_config.trained_model_file_path, obj=best_model)
 
+            # Make predictions using the best model on the test data
             predicted = best_model.predict(X_test)
 
+            # Calculate and return the R-squared (R2) score
             r2_square = r2_score(y_test, predicted)
             return r2_square
 
         except Exception as e:
+            # Raise a CustomException if an error occurs during model training
             raise CustomException(e, sys)
