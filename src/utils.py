@@ -22,8 +22,7 @@ def save_object(file_path, obj):
 def evaluate_model(X_train, X_test, y_train, y_test, models, params):
     try:
         report = {}
-        best_model_name = None
-        best_score = -float('inf')  # Initialize with a very low score
+        
 
         for model_name, model in models.items():
             param_grid = params.get(model_name, {})  # Get the hyperparameter grid for the current model
