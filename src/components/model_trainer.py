@@ -15,7 +15,6 @@ from sklearn.ensemble import RandomForestRegressor,AdaBoostRegressor, GradientBo
 from sklearn.svm import SVR
 from sklearn.linear_model import LinearRegression, Ridge,Lasso
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-from sklearn.model_selection import RandomizedSearchCV
 from catboost import CatBoostRegressor
 from xgboost import XGBRegressor
 import warnings
@@ -56,12 +55,54 @@ class ModelTrainer:
                 'AdaBoost classifier': AdaBoostRegressor(),
                 'Gradient Boosting': GradientBoostingRegressor(),
                 'Linear Regression': LinearRegression(),
+                'Ridge':Ridge() ,
+                'Lasso':Lasso(),
                 'CatBoost': CatBoostRegressor(verbose=False),
                 'Xgboost': XGBRegressor()
             }
+
+            params= {
+                "Decision Tree": {
+                    'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                    # 'splitter':['best','random'],
+                    # 'max_features':['sqrt','log2'],
+                },
+                'Ridge': {'alpha': [0.1, 1.0, 10.0]},
+                'Lasso': {'alpha': [0.1, 1.0, 10.0]},
+                "Random Forest":{
+                    # 'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                
+                    # 'max_features':['sqrt','log2',None],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "Gradient Boosting":{
+                    # 'loss':['squared_error', 'huber', 'absolute_error', 'quantile'],
+                    'learning_rate':[.1,.01,.05,.001],
+                    'subsample':[0.6,0.7,0.75,0.8,0.85,0.9],
+                    # 'criterion':['squared_error', 'friedman_mse'],
+                    # 'max_features':['auto','sqrt','log2'],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "Linear Regression":{},
+                "XGBRegressor":{
+                    'learning_rate':[.1,.01,.05,.001],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "CatBoosting Regressor":{
+                    'depth': [6,8,10],
+                    'learning_rate': [0.01, 0.05, 0.1],
+                    'iterations': [30, 50, 100]
+                },
+                "AdaBoost Regressor":{
+                    'learning_rate':[.1,.01,0.5,.001],
+                    # 'loss':['linear','square','exponential'],
+                    'n_estimators': [8,16,32,64,128,256]
+                }
+                 
+            }
             
             # Evaluate the models using the evaluate_model function
-            model_report = evaluate_model(X_train, X_test, y_train, y_test, models)
+            model_report = evaluate_model(X_train, X_test, y_train, y_test, models, params)
             
             # Obtain the best model name based on the evaluation results
             best_model_score = max(sorted(model_report.values()))
@@ -77,7 +118,7 @@ class ModelTrainer:
                 raise CustomException('No best model found')
 
             # Log that the best model was found on both training and test datasets
-            logging.info("Best model found on both training and test datasets")
+            logging.info("Best model found on both training datasets")
 
             # Save the best model to a specified file path
             save_object(file_path=self.model_trainer_config.trained_model_file_path, obj=best_model)
@@ -87,7 +128,13 @@ class ModelTrainer:
 
             # Calculate and return the R-squared (R2) score
             r2_square = r2_score(y_test, predicted)
-            return r2_square
+            round(r2_square, 3)
+
+            #calculate MSE
+            MSE = mean_squared_error(y_test, predicted)
+            round(MSE, 3)
+
+            return {'best model name':best_model_name, "r2_square":r2_square , "MSE":MSE}
 
         except Exception as e:
             # Raise a CustomException if an error occurs during model training
