@@ -17,7 +17,15 @@ def save_object(file_path, obj):
                 dill.dump(obj, file_obj)
         except Exception as e:
             raise CustomException(e, sys)
-        
+
+
+def load_object(file_path, obj):
+        try:
+            with open(file_path, "rb") as file_obj:
+                dill.load(obj, file_obj)
+        except Exception as e:
+            raise CustomException(e, sys)
+ 
 
 def evaluate_model(X_train, X_test, y_train, y_test, models, params):
     try:
