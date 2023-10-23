@@ -4,7 +4,7 @@ This machine learning application seeks to predict students' math scores based o
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
-2. [Dependencies]
+2. [Dependencies](#Dependencies)
 3. [Key Components](#key-components)
     - [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)
     - [Data Ingestion](#data-ingestion)
