@@ -2,6 +2,8 @@
 
 This machine learning application seeks to predict students' math scores based on various educational factors and personal attributes. By leveraging the power of machine learning, we aim to uncover the underlying factors that influence student performance and develop predictive models for future assessments.
 
+![Project Image](UI_screenshot.png)
+
 ## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Dependencies](#Dependencies)
