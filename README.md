@@ -127,7 +127,7 @@ The Flask web application (`app.py`) enables users to input student attributes f
 1. Ensure you have Flask and the necessary dependencies installed (refer to `requirements.txt`).
 2. Modify the model loading section to load your trained model. Replace the sample model with your own.
 3. Define the route for capturing POST requests and processing the data.
-4. Customize the response format to return predictions.
+4. Customize the response format to return predictions..
 
 
 ## Conclusions
