@@ -1,4 +1,4 @@
-# ML Education Performance Prediction
+# ML Student Performance Prediction
 
 Welcome to the ML Education Performance Prediction project! This machine learning application seeks to predict students' math scores based on various educational factors and personal attributes. By leveraging the power of machine learning, we aim to uncover the underlying factors that influence student performance and develop predictive models for future assessments.
 
