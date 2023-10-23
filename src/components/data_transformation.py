@@ -40,7 +40,7 @@ class DataTransformation:
             cat_pipeline=Pipeline(
                 steps=[
                     ("imputer", SimpleImputer(strategy='most_frequent')),
-                    ("one_hot_encoder", OneHotEncoder()),
+                    ("one_hot_encoder", OneHotEncoder(handle_unknown='ignore')),
                     ("Scaler", StandardScaler(with_mean=False))
                 ]
             )
@@ -90,12 +90,12 @@ class DataTransformation:
             input_feature_test_arr, np.array(target_feature_test_df)
             ]
             
-            logging.info("Saved Preprocessing object.")
-
+            
             save_object(
                     file_path = self.data_transformation_config.preprocessor_obj_file_path,
                     obj=preprocessing_obj
             )
+            logging.info("Saved Preprocessing object.")
             
             
             return(

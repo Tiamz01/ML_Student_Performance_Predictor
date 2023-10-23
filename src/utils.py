@@ -19,10 +19,13 @@ def save_object(file_path, obj):
             raise CustomException(e, sys)
 
 
-def load_object(file_path, obj):
+def load_object(file_path):
         try:
             with open(file_path, "rb") as file_obj:
-                dill.load(obj, file_obj)
+             loaded_obj = dill.load(file_obj)
+            
+            return loaded_obj
+                
         except Exception as e:
             raise CustomException(e, sys)
  
